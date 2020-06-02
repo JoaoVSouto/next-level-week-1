@@ -1,3 +1,4 @@
+import path from 'path';
 import * as core from 'express-serve-static-core';
 import express from 'express';
 import helmet from 'helmet';
@@ -17,6 +18,10 @@ class App {
   private middlewares() {
     this.server.use(express.json());
     this.server.use(helmet());
+    this.server.use(
+      '/uploads',
+      express.static(path.resolve(__dirname, '..', 'uploads'))
+    );
   }
 
   private routes() {
