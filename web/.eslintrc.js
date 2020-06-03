@@ -61,6 +61,12 @@ module.exports = {
       },
     ],
     'react/prop-types': 'off',
+    'jsx-a11y/label-has-associated-control': [
+      'error',
+      {
+        assert: 'either',
+      },
+    ],
   },
   settings: {
     'import/parsers': {
