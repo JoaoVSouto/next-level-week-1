@@ -1,4 +1,5 @@
 import React from 'react';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { Feather as Icon } from '@expo/vector-icons';
 import { View, ImageBackground, Image, Text } from 'react-native';
 import { RectButton } from 'react-native-gesture-handler';
