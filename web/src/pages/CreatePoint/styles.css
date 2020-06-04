@@ -198,6 +198,11 @@
   color: var(--title-color);
 }
 
+.items-grid li img,
+.items-grid li span {
+  user-select: none;
+}
+
 .items-grid li.selected {
   background: #e1faec;
   border: 2px solid #34cb79;
