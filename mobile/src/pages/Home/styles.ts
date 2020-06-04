@@ -4,6 +4,7 @@ export default StyleSheet.create({
   container: {
     flex: 1,
     padding: 32,
+    backgroundColor: '#f0f0f5',
   },
 
   main: {
@@ -57,6 +58,8 @@ export default StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.1)',
     justifyContent: 'center',
     alignItems: 'center',
+    borderBottomLeftRadius: 10,
+    borderTopLeftRadius: 10,
   },
 
   buttonText: {
