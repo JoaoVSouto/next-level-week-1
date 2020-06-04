@@ -36,6 +36,12 @@ const CreatePoint: React.FC = () => {
     0,
   ]);
 
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    whatsapp: '',
+  });
+
   const [selectedUf, setSelectedUf] = useState('0');
   const [selectedCity, setSelectedCity] = useState('0');
   const [selectedPosition, setSelectedPosition] = useState<[number, number]>([
@@ -94,6 +100,15 @@ const CreatePoint: React.FC = () => {
     setSelectedPosition([e.latlng.lat, e.latlng.lng]);
   };
 
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+
   return (
     <div id="page-create-point">
       <header>
@@ -117,18 +132,33 @@ const CreatePoint: React.FC = () => {
 
           <div className="field">
             <label htmlFor="name">Nome da entidade</label>
-            <input id="name" type="text" name="name" />
+            <input
+              id="name"
+              type="text"
+              name="name"
+              onChange={handleInputChange}
+            />
           </div>
 
           <div className="field-group">
             <div className="field">
               <label htmlFor="email">E-mail</label>
-              <input id="email" type="email" name="email" />
+              <input
+                id="email"
+                type="email"
+                name="email"
+                onChange={handleInputChange}
+              />
             </div>
 
             <div className="field">
               <label htmlFor="whatsapp">Whatsapp</label>
-              <input id="whatsapp" type="text" name="whatsapp" />
+              <input
+                id="whatsapp"
+                type="text"
+                name="whatsapp"
+                onChange={handleInputChange}
+              />
             </div>
           </div>
         </fieldset>
