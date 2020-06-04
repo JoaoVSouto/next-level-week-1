@@ -1,8 +1,14 @@
 import React from 'react';
-import { View } from 'react-native';
+import { View, Image } from 'react-native';
+
+import styles from './styles';
 
 const Home: React.FC = () => {
-  return <View />;
+  return (
+    <View style={styles.container}>
+      <Image source={require('../../assets/logo.png')} />
+    </View>
+  );
 };
 
 export default Home;
