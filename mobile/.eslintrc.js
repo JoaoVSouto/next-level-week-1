@@ -1,5 +1,6 @@
 module.exports = {
   env: {
+    browser: true,
     es6: true,
   },
   extends: [
@@ -7,9 +8,7 @@ module.exports = {
     'plugin:react/recommended',
     'plugin:@typescript-eslint/eslint-recommended',
     'plugin:@typescript-eslint/recommended',
-    'airbnb-typescript',
-    '@react-native-community',
-    'prettier',
+    'airbnb',
     'prettier/@typescript-eslint',
     'prettier/react',
     'plugin:prettier/recommended',
@@ -61,7 +60,6 @@ module.exports = {
         tsx: 'never',
       },
     ],
-    'react/prop-types': 'off',
   },
   settings: {
     'import/parsers': {
