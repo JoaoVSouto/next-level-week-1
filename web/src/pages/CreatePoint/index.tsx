@@ -31,14 +31,27 @@ const CreatePoint: React.FC = () => {
   const [ufs, setUfs] = useState<string[]>([]);
   const [cities, setCities] = useState<string[]>([]);
 
+  const [initialPosition, setInitialPosition] = useState<[number, number]>([
+    0,
+    0,
+  ]);
+
   const [selectedUf, setSelectedUf] = useState('0');
   const [selectedCity, setSelectedCity] = useState('0');
   const [selectedPosition, setSelectedPosition] = useState<[number, number]>([
-    -5.839974,
-    -35.2115434,
+    0,
+    0,
   ]);
 
-  const [mapClicked, setMapClicked] = useState(false);
+  useEffect(() => {
+    navigator.geolocation.getCurrentPosition(position => {
+      const {
+        coords: { latitude, longitude },
+      } = position;
+
+      setInitialPosition([latitude, longitude]);
+    });
+  }, []);
 
   useEffect(() => {
     (async () => {
@@ -79,7 +92,6 @@ const CreatePoint: React.FC = () => {
 
   const handleMapClick = (e: LeafletMouseEvent) => {
     setSelectedPosition([e.latlng.lat, e.latlng.lng]);
-    setMapClicked(true);
   };
 
   return (
@@ -127,13 +139,13 @@ const CreatePoint: React.FC = () => {
             <span>Selecione o endereço no mapa</span>
           </legend>
 
-          <Map center={selectedPosition} zoom={15} onClick={handleMapClick}>
+          <Map center={initialPosition} zoom={15} onClick={handleMapClick}>
             <TileLayer
               attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
 
-            {mapClicked && <Marker position={selectedPosition} />}
+            <Marker position={selectedPosition} />
           </Map>
 
           <div className="field-group">
