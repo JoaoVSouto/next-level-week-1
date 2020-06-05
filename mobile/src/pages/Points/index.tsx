@@ -7,7 +7,7 @@ import {
   Image,
   Alert,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import MapView, { Marker } from 'react-native-maps';
 import { SvgUri } from 'react-native-svg';
 import * as Location from 'expo-location';
@@ -32,6 +32,11 @@ interface Point {
   longitude: number;
 }
 
+interface Params {
+  uf: string;
+  city: string;
+}
+
 const Points: React.FC = () => {
   const [items, setItems] = useState<Item[]>([]);
   const [points, setPoints] = useState<Point[]>([]);
@@ -43,6 +48,9 @@ const Points: React.FC = () => {
   ]);
 
   const navigation = useNavigation();
+  const route = useRoute();
+
+  const routeParams = route.params as Params;
 
   useEffect(() => {
     (async () => {
@@ -74,14 +82,14 @@ const Points: React.FC = () => {
     (async () => {
       const res = await api.get('points', {
         params: {
-          city: 'Parnamirim',
-          uf: 'RN',
-          items: [1, 4],
+          city: routeParams.city,
+          uf: routeParams.uf,
+          items: selectedItems,
         },
       });
       setPoints(res.data);
     })();
-  }, []);
+  }, [routeParams, selectedItems]);
 
   const handleNavigateBack = () => {
     navigation.goBack();
