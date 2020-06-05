@@ -3,6 +3,7 @@ import * as core from 'express-serve-static-core';
 import express from 'express';
 import helmet from 'helmet';
 import cors from 'cors';
+import { errors } from 'celebrate';
 
 import routes from './routes';
 
@@ -14,6 +15,7 @@ class App {
 
     this.middlewares();
     this.routes();
+    this.exceptionHandler();
   }
 
   private middlewares() {
@@ -28,6 +30,10 @@ class App {
 
   private routes() {
     this.server.use(routes);
+  }
+
+  private exceptionHandler() {
+    this.server.use(errors());
   }
 }
 

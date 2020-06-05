@@ -5,7 +5,7 @@ import knex from '../database/connection';
 interface Point {
   name: string;
   email: string;
-  whatsapp: string;
+  whatsapp: number;
   latitude: number;
   longitude: number;
   city: string;
