@@ -6,6 +6,8 @@ import {
   Image,
   Text,
   SafeAreaView,
+  Linking,
+  Alert,
 } from 'react-native';
 import { RectButton } from 'react-native-gesture-handler';
 import * as MailComposer from 'expo-mail-composer';
@@ -60,6 +62,19 @@ const Detail: React.FC = () => {
     });
   };
 
+  const handleWhatsapp = async () => {
+    try {
+      await Linking.openURL(
+        `whatsapp://send?phone=${data.point.whatsapp}&text=Tenho interesse sobre coleta de resíduos`
+      );
+    } catch (err) {
+      Alert.alert(
+        'Opa',
+        'Erro ao abrir Whatsapp, verifique se está instalado no seu celular.'
+      );
+    }
+  };
+
   if (!data.point) return null;
 
   return (
@@ -89,7 +104,7 @@ const Detail: React.FC = () => {
         </View>
       </View>
       <View style={styles.footer}>
-        <RectButton style={styles.button} onPress={() => {}}>
+        <RectButton style={styles.button} onPress={handleWhatsapp}>
           <FontAwesome name="whatsapp" size={20} color="#fff" />
           <Text style={styles.buttonText}>Whatsapp</Text>
         </RectButton>
