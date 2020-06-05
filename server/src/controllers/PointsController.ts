@@ -2,6 +2,21 @@ import { Request, Response } from 'express';
 
 import knex from '../database/connection';
 
+interface Point {
+  name: string;
+  email: string;
+  whatsapp: string;
+  latitude: number;
+  longitude: number;
+  city: string;
+  uf: string;
+  items: string;
+}
+
+interface CustomRequest<T> extends Request {
+  body: T;
+}
+
 class PointsController {
   async index(req: Request, res: Response) {
     const { city, uf, items } = req.query;
@@ -38,7 +53,7 @@ class PointsController {
     return res.json({ point, items });
   }
 
-  async create(req: Request, res: Response) {
+  async create(req: CustomRequest<Point>, res: Response) {
     const {
       name,
       email,
@@ -53,8 +68,7 @@ class PointsController {
     const trx = await knex.transaction();
 
     const point = {
-      image:
-        'https://images.unsplash.com/photo-1556767576-5ec41e3239ea?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=400&q=60',
+      image: req.file.filename,
       name,
       email,
       whatsapp,
@@ -68,10 +82,13 @@ class PointsController {
 
     const [point_id] = insertedIds;
 
-    const pointItems = items.map((item_id: number) => ({
-      item_id,
-      point_id,
-    }));
+    const pointItems = items
+      .split(',')
+      .map(item => +item.trim())
+      .map((item_id: number) => ({
+        item_id,
+        point_id,
+      }));
 
     await trx('point_items').insert(pointItems);
 
