@@ -8,6 +8,7 @@ import {
   SafeAreaView,
 } from 'react-native';
 import { RectButton } from 'react-native-gesture-handler';
+import * as MailComposer from 'expo-mail-composer';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { Feather as Icon, FontAwesome } from '@expo/vector-icons';
 
@@ -52,6 +53,13 @@ const Detail: React.FC = () => {
     navigation.goBack();
   };
 
+  const handleComposeMail = () => {
+    MailComposer.composeAsync({
+      subject: 'Interesse na coleta de resíduos',
+      recipients: [data.point.email],
+    });
+  };
+
   if (!data.point) return null;
 
   return (
@@ -86,7 +94,7 @@ const Detail: React.FC = () => {
           <Text style={styles.buttonText}>Whatsapp</Text>
         </RectButton>
 
-        <RectButton style={styles.button} onPress={() => {}}>
+        <RectButton style={styles.button} onPress={handleComposeMail}>
           <Icon name="mail" size={20} color="#fff" />
           <Text style={styles.buttonText}>E-mail</Text>
         </RectButton>
