@@ -1,3 +1,5 @@
 node_modules
 database.sqlite
 TODO.md
+uploads/*
+!uploads/*.svg
