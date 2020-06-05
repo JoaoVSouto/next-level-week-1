@@ -28,7 +28,15 @@ const Points: React.FC = () => {
         </Text>
 
         <View style={styles.mapContainer}>
-          <MapView style={styles.map} />
+          <MapView
+            style={styles.map}
+            initialRegion={{
+              latitude: -5.8850813,
+              longitude: -35.2038551,
+              latitudeDelta: 0.014,
+              longitudeDelta: 0.014,
+            }}
+          />
         </View>
       </View>
       <View style={styles.itemsContainer}>
