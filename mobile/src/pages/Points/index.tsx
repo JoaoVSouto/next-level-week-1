@@ -87,8 +87,8 @@ const Points: React.FC = () => {
     navigation.goBack();
   };
 
-  const handleNavigateToDetail = () => {
-    navigation.navigate('Detail');
+  const handleNavigateToDetail = (pointId: number) => {
+    navigation.navigate('Detail', { point_id: pointId });
   };
 
   const handleSelectItem = (itemId: number) => {
@@ -127,7 +127,7 @@ const Points: React.FC = () => {
                 <Marker
                   key={String(point.id)}
                   style={styles.mapMarker}
-                  onPress={handleNavigateToDetail}
+                  onPress={() => handleNavigateToDetail(point.id)}
                   coordinate={{
                     latitude: point.latitude,
                     longitude: point.longitude,

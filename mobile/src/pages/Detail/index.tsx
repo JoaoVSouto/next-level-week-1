@@ -1,5 +1,5 @@
-import React from 'react';
-import { useNavigation } from '@react-navigation/native';
+import React, { useEffect } from 'react';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import {
   View,
   TouchableOpacity,
@@ -13,8 +13,15 @@ import { Feather as Icon, FontAwesome } from '@expo/vector-icons';
 
 import styles from './styles';
 
+interface Params {
+  point_id: number;
+}
+
 const Detail: React.FC = () => {
   const navigation = useNavigation();
+  const route = useRoute();
+
+  const routeParams = route.params as Params;
 
   const handleNavigateBack = () => {
     navigation.goBack();
