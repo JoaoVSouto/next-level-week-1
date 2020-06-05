@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import {
   View,
@@ -11,21 +11,48 @@ import { RectButton } from 'react-native-gesture-handler';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { Feather as Icon, FontAwesome } from '@expo/vector-icons';
 
+import api from '../../services/api';
+
 import styles from './styles';
 
 interface Params {
   point_id: number;
 }
 
+interface Data {
+  point: {
+    image: string;
+    name: string;
+    email: string;
+    whatsapp: string;
+    city: string;
+    uf: string;
+  };
+  items: {
+    title: string;
+  }[];
+}
+
 const Detail: React.FC = () => {
+  const [data, setData] = useState<Data>({} as Data);
+
   const navigation = useNavigation();
   const route = useRoute();
 
   const routeParams = route.params as Params;
 
+  useEffect(() => {
+    (async () => {
+      const res = await api.get(`points/${routeParams.point_id}`);
+      setData(res.data);
+    })();
+  }, [routeParams]);
+
   const handleNavigateBack = () => {
     navigation.goBack();
   };
+
+  if (!data.point) return null;
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -37,17 +64,20 @@ const Detail: React.FC = () => {
         <Image
           style={styles.pointImage}
           source={{
-            uri:
-              'https://images.unsplash.com/photo-1556767576-5ec41e3239ea?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=400&q=60',
+            uri: data.point.image,
           }}
         />
 
-        <Text style={styles.pointName}>Mercadão do João</Text>
-        <Text style={styles.pointItems}>Lâmpadas, Óleo de Cozinha</Text>
+        <Text style={styles.pointName}>{data.point.name}</Text>
+        <Text style={styles.pointItems}>
+          {data.items.map(item => item.title).join(', ')}
+        </Text>
 
         <View style={styles.address}>
           <Text style={styles.addressTitle}>Endereço</Text>
-          <Text style={styles.addressContent}>Rio do Sul, SC</Text>
+          <Text style={styles.addressContent}>
+            {data.point.city}, {data.point.uf}
+          </Text>
         </View>
       </View>
       <View style={styles.footer}>
