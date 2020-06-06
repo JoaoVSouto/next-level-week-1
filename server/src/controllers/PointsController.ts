@@ -2,6 +2,8 @@ import { Request, Response } from 'express';
 
 import knex from '../database/connection';
 
+import externalIPv4 from '../utils/externalIPv4';
+
 interface Point {
   name: string;
   email: string;
@@ -35,7 +37,7 @@ class PointsController {
 
     const serializedPoints = points.map(point => ({
       ...point,
-      image_url: `http://localhost:3333/uploads/${point.image}`,
+      image_url: `http://${externalIPv4?.address}:3333/uploads/${point.image}`,
     }));
 
     return res.json(serializedPoints);
@@ -52,7 +54,7 @@ class PointsController {
 
     const serializedPoint = {
       ...point,
-      image_url: `http://localhost:3333/uploads/${point.image}`,
+      image_url: `http://${externalIPv4?.address}:3333/uploads/${point.image}`,
     };
 
     const items = await knex('items')
