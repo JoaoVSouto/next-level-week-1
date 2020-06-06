@@ -1,9 +1,11 @@
 import path from 'path';
 import * as core from 'express-serve-static-core';
-import express from 'express';
+import express, { Errback, Request, Response, NextFunction } from 'express';
 import helmet from 'helmet';
 import cors from 'cors';
+import 'express-async-errors';
 import { errors } from 'celebrate';
+import Youch from 'youch';
 
 import routes from './routes';
 
@@ -34,6 +36,18 @@ class App {
 
   private exceptionHandler() {
     this.server.use(errors());
+
+    this.server.use(
+      async (err: Errback, req: Request, res: Response, next: NextFunction) => {
+        if (process.env.NODE_ENV === 'development') {
+          const errors = await new Youch(err, req).toJSON();
+
+          return res.status(500).json(errors);
+        }
+
+        return res.status(500).json({ error: 'Internal server error.' });
+      }
+    );
   }
 }
 
