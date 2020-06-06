@@ -8,5 +8,7 @@ export default Joi.object().keys({
   longitude: Joi.number().required(),
   city: Joi.string().required(),
   uf: Joi.string().max(2).required(),
-  items: Joi.string().required(),
+  items: Joi.string()
+    .regex(/^[0-9]+\s*(\s*,\s*[0-9]+\s*)*$/)
+    .required(),
 });
