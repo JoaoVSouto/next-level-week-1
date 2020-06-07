@@ -1,8 +1,10 @@
 import { Request, Response } from 'express';
+import { CustomFile } from 'multer';
 
 import knex from '../database/connection';
 
 import externalIPv4 from '../utils/externalIPv4';
+import resizeImage from '../utils/resizeImage';
 
 interface Point {
   name: string;
@@ -66,6 +68,8 @@ class PointsController {
   }
 
   async create(req: CustomRequest<Point>, res: Response) {
+    const { resizedname } = req.file as CustomFile;
+
     const {
       name,
       email,
@@ -80,7 +84,7 @@ class PointsController {
     const trx = await knex.transaction();
 
     const point = {
-      image: req.file.filename,
+      image: resizedname,
       name,
       email,
       whatsapp,
@@ -105,6 +109,8 @@ class PointsController {
     await trx('point_items').insert(pointItems);
 
     await trx.commit();
+
+    await resizeImage(req.file as CustomFile);
 
     return res.json({ id: point_id, ...point });
   }
