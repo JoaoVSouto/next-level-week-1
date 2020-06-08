@@ -31,3 +31,7 @@ h6 {
   color: var(--title-color);
   font-family: Ubuntu;
 }
+
+.overflow-hidden {
+  overflow: hidden;
+}
