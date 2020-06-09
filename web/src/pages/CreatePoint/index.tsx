@@ -1,13 +1,18 @@
-import React, { useState, useEffect, ChangeEvent, FormEvent } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { FiArrowLeft, FiCheckCircle } from 'react-icons/fi';
 import { Map, TileLayer, Marker } from 'react-leaflet';
 import axios from 'axios';
 import { LeafletMouseEvent } from 'leaflet';
+import { SubmitHandler } from '@unform/core';
+import { Form } from '@unform/web';
+import { OptionTypeBase, ValueType } from 'react-select';
 
 import api from '../../services/api';
 
 import Dropzone from '../../components/Dropzone';
+import TextInput from '../../components/TextInput';
+import Select from '../../components/Select';
 
 import useBodyClass from '../../hooks/useBodyClass';
 
@@ -30,24 +35,31 @@ interface IBGECityResponse {
   nome: string;
 }
 
+interface SelectOption extends OptionTypeBase {
+  value: string;
+  label: string;
+}
+
+interface FormData {
+  city: string;
+  email: string;
+  name: string;
+  uf: string;
+  whatsapp: string;
+}
+
 const CreatePoint: React.FC = () => {
   const [items, setItems] = useState<Item[]>([]);
-  const [ufs, setUfs] = useState<string[]>([]);
-  const [cities, setCities] = useState<string[]>([]);
+  const [ufs, setUfs] = useState<SelectOption[]>([]);
+  const [cities, setCities] = useState<SelectOption[]>([]);
 
   const [initialPosition, setInitialPosition] = useState<[number, number]>([
     0,
     0,
   ]);
 
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    whatsapp: '',
-  });
-
-  const [selectedUf, setSelectedUf] = useState('0');
-  const [selectedCity, setSelectedCity] = useState('0');
+  const [selectedUf, setSelectedUf] = useState<SelectOption | null>(null);
+  const [selectedCity, setSelectedCity] = useState<SelectOption | null>(null);
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
   const [selectedPosition, setSelectedPosition] = useState<[number, number]>([
     0,
@@ -83,42 +95,41 @@ const CreatePoint: React.FC = () => {
       const res = await axios.get<IBGEUFResponse[]>(
         'https://servicodados.ibge.gov.br/api/v1/localidades/estados'
       );
-      const ufInitials = res.data.map(uf => uf.sigla);
+      const ufInitials = res.data.map(uf => ({
+        value: uf.sigla,
+        label: uf.sigla,
+      }));
       setUfs(ufInitials);
     })();
   }, []);
 
   useEffect(() => {
-    if (selectedUf === '0') return;
+    if (!selectedUf?.value) return;
 
     (async () => {
       const res = await axios.get<IBGECityResponse[]>(
-        `https://servicodados.ibge.gov.br/api/v1/localidades/estados/${selectedUf}/municipios`
+        `https://servicodados.ibge.gov.br/api/v1/localidades/estados/${selectedUf.value}/municipios`
       );
-      const citiesNames = res.data.map(city => city.nome);
+      const citiesNames = res.data.map(city => ({
+        value: city.nome,
+        label: city.nome,
+      }));
       setCities(citiesNames);
     })();
   }, [selectedUf]);
 
-  const handleSelectUf = (e: ChangeEvent<HTMLSelectElement>) => {
-    setSelectedUf(e.target.value);
+  const handleSelectUf = (selectedOption: ValueType<OptionTypeBase>) => {
+    const { label, value } = selectedOption as SelectOption;
+    setSelectedUf({ label, value });
   };
 
-  const handleSelectCity = (e: ChangeEvent<HTMLSelectElement>) => {
-    setSelectedCity(e.target.value);
+  const handleSelectCity = (selectedOption: ValueType<OptionTypeBase>) => {
+    const { label, value } = selectedOption as SelectOption;
+    setSelectedCity({ label, value });
   };
 
   const handleMapClick = (e: LeafletMouseEvent) => {
     setSelectedPosition([e.latlng.lat, e.latlng.lng]);
-  };
-
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
   };
 
   const handleSelectItem = (itemId: number) => {
@@ -130,30 +141,26 @@ const CreatePoint: React.FC = () => {
     setSelectedItems([...selectedItems, itemId]);
   };
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    const { name, email, whatsapp } = formData;
-    const uf = selectedUf;
-    const city = selectedCity;
+  const handleSubmit: SubmitHandler<FormData> = async data => {
+    const { name, city, email, uf, whatsapp } = data;
     const [latitude, longitude] = selectedPosition;
 
-    const data = new FormData();
+    const payload = new FormData();
 
-    data.append('name', name);
-    data.append('email', email);
-    data.append('whatsapp', whatsapp);
-    data.append('uf', uf);
-    data.append('city', city);
-    data.append('latitude', String(latitude));
-    data.append('longitude', String(longitude));
-    data.append('items', selectedItems.join(','));
+    payload.append('name', name);
+    payload.append('city', city);
+    payload.append('email', email);
+    payload.append('uf', uf);
+    payload.append('whatsapp', whatsapp);
+    payload.append('latitude', String(latitude));
+    payload.append('longitude', String(longitude));
+    payload.append('items', selectedItems.join(','));
 
     if (selectedFile) {
-      data.append('image', selectedFile);
+      payload.append('image', selectedFile);
     }
 
-    await api.post('points', data);
+    await api.post('points', payload);
 
     window.scroll({
       top: 0,
@@ -181,7 +188,7 @@ const CreatePoint: React.FC = () => {
           </Link>
         </header>
 
-        <form onSubmit={handleSubmit}>
+        <Form onSubmit={handleSubmit}>
           <h1>
             Cadastro do <br /> ponto de coleta
           </h1>
@@ -194,34 +201,16 @@ const CreatePoint: React.FC = () => {
             </legend>
 
             <div className="field">
-              <label htmlFor="name">Nome da entidade</label>
-              <input
-                id="name"
-                type="text"
-                name="name"
-                onChange={handleInputChange}
-              />
+              <TextInput name="name" label="Nome da entidade" type="text" />
             </div>
 
             <div className="field-group">
               <div className="field">
-                <label htmlFor="email">E-mail</label>
-                <input
-                  id="email"
-                  type="email"
-                  name="email"
-                  onChange={handleInputChange}
-                />
+                <TextInput name="email" label="E-mail" type="email" />
               </div>
 
               <div className="field">
-                <label htmlFor="whatsapp">Whatsapp</label>
-                <input
-                  id="whatsapp"
-                  type="text"
-                  name="whatsapp"
-                  onChange={handleInputChange}
-                />
+                <TextInput name="whatsapp" label="Whatsapp" type="text" />
               </div>
             </div>
           </fieldset>
@@ -243,40 +232,26 @@ const CreatePoint: React.FC = () => {
 
             <div className="field-group">
               <div className="field">
-                <label htmlFor="uf">Estado (UF)</label>
-                <select
-                  value={selectedUf}
-                  onChange={handleSelectUf}
+                <Select
                   name="uf"
-                  id="uf"
-                >
-                  <option value="0" disabled>
-                    Selecione uma UF
-                  </option>
-                  {ufs.map(uf => (
-                    <option key={uf} value={uf}>
-                      {uf}
-                    </option>
-                  ))}
-                </select>
+                  label="Estado (UF)"
+                  placeholder="Selecione uma UF"
+                  onChange={handleSelectUf}
+                  value={selectedUf}
+                  options={ufs}
+                  noOptionsMessage={() => 'Nenhuma UF encontrada'}
+                />
               </div>
               <div className="field">
-                <label htmlFor="city">Cidade</label>
-                <select
-                  value={selectedCity}
-                  onChange={handleSelectCity}
+                <Select
                   name="city"
-                  id="city"
-                >
-                  <option value="0" disabled>
-                    Selecione uma cidade
-                  </option>
-                  {cities.map(city => (
-                    <option key={city} value={city}>
-                      {city}
-                    </option>
-                  ))}
-                </select>
+                  label="Cidade"
+                  placeholder="Selecione uma cidade"
+                  onChange={handleSelectCity}
+                  value={selectedCity}
+                  options={cities}
+                  noOptionsMessage={() => 'Nenhuma cidade encontrada'}
+                />
               </div>
             </div>
           </fieldset>
@@ -302,7 +277,7 @@ const CreatePoint: React.FC = () => {
           </fieldset>
 
           <button type="submit">Cadastrar ponto de coleta</button>
-        </form>
+        </Form>
       </div>
 
       <div className={`success-info ${showSuccess ? 'show-success' : ''}`}>
