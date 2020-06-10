@@ -10,9 +10,12 @@ import { OptionTypeBase, ValueType } from 'react-select';
 
 import api from '../../services/api';
 
+import sanitizeWhatsapp from '../../utils/sanitizeWhatsapp';
+
 import Dropzone from '../../components/Dropzone';
 import TextInput from '../../components/TextInput';
 import Select from '../../components/Select';
+import InputMask from '../../components/InputMask';
 
 import useBodyClass from '../../hooks/useBodyClass';
 
@@ -142,7 +145,8 @@ const CreatePoint: React.FC = () => {
   };
 
   const handleSubmit: SubmitHandler<FormData> = async data => {
-    const { name, city, email, uf, whatsapp } = data;
+    const { name, city, email, uf, whatsapp: rawWhatsapp } = data;
+    const whatsapp = sanitizeWhatsapp(rawWhatsapp);
     const [latitude, longitude] = selectedPosition;
 
     const payload = new FormData();
@@ -210,7 +214,13 @@ const CreatePoint: React.FC = () => {
               </div>
 
               <div className="field">
-                <TextInput name="whatsapp" label="Whatsapp" type="text" />
+                <InputMask
+                  name="whatsapp"
+                  label="Whatsapp"
+                  type="text"
+                  mask="+55 (99) 99999-9999"
+                  alwaysShowMask
+                />
               </div>
             </div>
           </fieldset>
