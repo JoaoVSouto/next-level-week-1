@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import ReactInputMask, { Props as InputProps } from 'react-input-mask';
 import { useField } from '@unform/core';
+import { FiAlertTriangle } from 'react-icons/fi';
 
 interface Props extends InputProps {
   name: string;
@@ -29,9 +30,19 @@ const InputMask: React.FC<Props> = ({ name, label, ...rest }) => {
     <>
       {label && <label htmlFor={fieldName}>{label}</label>}
 
-      <ReactInputMask ref={inputRef} defaultValue={defaultValue} {...rest} />
+      <ReactInputMask
+        ref={inputRef}
+        defaultValue={defaultValue}
+        className={error ? 'is-invalid' : ''}
+        {...rest}
+      />
 
-      {error && <span>{error}</span>}
+      {error && (
+        <span>
+          <FiAlertTriangle color="#e57373" size={20} />
+          {error}
+        </span>
+      )}
     </>
   );
 };

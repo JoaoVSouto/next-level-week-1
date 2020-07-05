@@ -4,6 +4,7 @@ import ReactSelect, {
   Props as SelectProps,
 } from 'react-select';
 import { useField } from '@unform/core';
+import { FiAlertTriangle } from 'react-icons/fi';
 
 import { selectStyles as styles, selectTheme as theme } from './styles';
 
@@ -47,11 +48,17 @@ const Select: React.FC<Props> = ({ name, label, ...rest }) => {
         ref={selectRef}
         classNamePrefix="react-select"
         theme={theme}
+        hasError={error}
         styles={styles}
         {...rest}
       />
 
-      {error && <span>{error}</span>}
+      {error && (
+        <span>
+          <FiAlertTriangle color="#e57373" size={20} />
+          {error}
+        </span>
+      )}
     </>
   );
 };

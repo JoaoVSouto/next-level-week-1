@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { useField } from '@unform/core';
+import { FiAlertTriangle } from 'react-icons/fi';
 
 interface Props {
   name: string;
@@ -29,10 +30,16 @@ const TextInput: React.FC<TextInputProps> = ({ name, label, ...rest }) => {
         id={fieldName}
         ref={inputRef}
         defaultValue={defaultValue}
+        className={error ? 'is-invalid' : ''}
         {...rest}
       />
 
-      {error && <span>{error}</span>}
+      {error && (
+        <span>
+          <FiAlertTriangle color="#e57373" size={20} />
+          {error}
+        </span>
+      )}
     </>
   );
 };

@@ -2,12 +2,14 @@
   --primary-color: #34cb79;
   --title-color: #322153;
   --text-color: #6c6c80;
+  --error-color: #e57373;
 }
 
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  outline-color: var(--primary-color);
 }
 
 body {
