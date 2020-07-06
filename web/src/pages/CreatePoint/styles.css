@@ -113,7 +113,8 @@
 }
 
 #page-create-point form .field span,
-#page-create-point form .field span {
+#page-create-point form .field span,
+#page-create-point form .dropzone.error + span {
   color: var(--error-color);
   font-weight: bold;
 
@@ -124,7 +125,8 @@
 }
 
 #page-create-point form .field span > svg,
-#page-create-point form .field span > svg {
+#page-create-point form .field span > svg,
+#page-create-point form .dropzone.error + span > svg {
   margin-right: 5px;
 }
 

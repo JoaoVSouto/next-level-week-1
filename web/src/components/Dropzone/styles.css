@@ -2,12 +2,25 @@
   height: 300px;
   background: #e1faec;
   border-radius: 10px;
+  transition: box-shadow 0.1s;
 
   display: flex;
   justify-content: center;
   align-items: center;
   margin-top: 48px;
   outline: 0;
+}
+
+.dropzone:focus-within {
+  box-shadow: 0 0 0 2px var(--primary-color);
+}
+
+.dropzone.error {
+  border: 2px solid var(--error-color);
+}
+
+.dropzone.error:focus-within {
+  box-shadow: 0 0 0 1px var(--error-color);
 }
 
 .dropzone img {

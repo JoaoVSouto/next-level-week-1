@@ -1,14 +1,15 @@
 import React, { useState, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { FiUpload } from 'react-icons/fi';
+import { FiUpload, FiAlertTriangle } from 'react-icons/fi';
 
 import './styles.css';
 
 interface Props {
   onFileUpload: (file: File) => void;
+  error?: string;
 }
 
-const Dropzone: React.FC<Props> = ({ onFileUpload }) => {
+const Dropzone: React.FC<Props> = ({ onFileUpload, error }) => {
   const [selectedFileUrl, setSelectedFileUrl] = useState('');
 
   const onDrop = useCallback(
@@ -30,18 +31,27 @@ const Dropzone: React.FC<Props> = ({ onFileUpload }) => {
   });
 
   return (
-    <div className="dropzone" {...getRootProps()}>
-      <input {...getInputProps()} accept="image/*" />
+    <>
+      <div className={`dropzone ${error ? 'error' : ''}`} {...getRootProps()}>
+        <input {...getInputProps()} accept="image/*" />
 
-      {selectedFileUrl ? (
-        <img src={selectedFileUrl} alt="Imagem enviada" />
-      ) : (
-        <p>
-          <FiUpload />
-          Imagem do estabelecimento
-        </p>
+        {selectedFileUrl ? (
+          <img src={selectedFileUrl} alt="Imagem enviada" />
+        ) : (
+          <p>
+            <FiUpload />
+            Imagem do estabelecimento
+          </p>
+        )}
+      </div>
+
+      {error && (
+        <span>
+          <FiAlertTriangle color="#e57373" size={20} />
+          {error}
+        </span>
       )}
-    </div>
+    </>
   );
 };
 
