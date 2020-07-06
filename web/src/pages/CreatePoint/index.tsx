@@ -287,18 +287,19 @@ const CreatePoint: React.FC = () => {
               <span>Selecione um ou mais itens abaixo</span>
             </legend>
 
-            <ul className="items-grid">
+            <div className="items-grid">
               {items.map(item => (
-                <li
+                <button
+                  type="button"
                   key={String(item.id)}
                   onClick={() => handleSelectItem(item.id)}
                   className={selectedItems.includes(item.id) ? 'selected' : ''}
                 >
                   <img src={item.image_url} alt={item.title} />
                   <span>{item.title}</span>
-                </li>
+                </button>
               ))}
-            </ul>
+            </div>
           </fieldset>
 
           <button type="submit">Cadastrar ponto de coleta</button>
