@@ -114,7 +114,8 @@
 
 #page-create-point form .field span,
 #page-create-point form .field span,
-#page-create-point form .dropzone.error + span {
+#page-create-point form .dropzone.error + span,
+#page-create-point form .leaflet-container.error + span {
   color: var(--error-color);
   font-weight: bold;
 
@@ -126,7 +127,8 @@
 
 #page-create-point form .field span > svg,
 #page-create-point form .field span > svg,
-#page-create-point form .dropzone.error + span > svg {
+#page-create-point form .dropzone.error + span > svg,
+#page-create-point form .leaflet-container.error + span > svg {
   margin-right: 5px;
 }
 
@@ -182,6 +184,23 @@
   height: 350px;
   border-radius: 8px;
   margin-bottom: 24px;
+}
+
+#page-create-point form .leaflet-container:focus-within {
+  box-shadow: 0 0 0 2px var(--primary-color);
+}
+
+#page-create-point form .leaflet-container.error {
+  border: 2px solid var(--error-color);
+  margin-bottom: 8px;
+}
+
+#page-create-point form .leaflet-container.error + span {
+  margin-bottom: 16px;
+}
+
+#page-create-point form .leaflet-container.error:focus-within {
+  box-shadow: 0 0 0 1px var(--error-color);
 }
 
 #page-create-point form button {

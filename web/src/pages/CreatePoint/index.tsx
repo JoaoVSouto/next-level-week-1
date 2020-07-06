@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useHistory } from 'react-router-dom';
-import { FiArrowLeft, FiCheckCircle } from 'react-icons/fi';
+import { FiArrowLeft, FiCheckCircle, FiAlertTriangle } from 'react-icons/fi';
 import { Map, TileLayer, Marker } from 'react-leaflet';
 import axios from 'axios';
 import { LeafletMouseEvent } from 'leaflet';
@@ -43,6 +43,12 @@ interface SelectOption extends OptionTypeBase {
   label: string;
 }
 
+interface CustomErrors {
+  dropzone?: string;
+  map?: string;
+  items?: string;
+}
+
 interface FormData {
   city: string;
   email: string;
@@ -71,6 +77,8 @@ const CreatePoint: React.FC = () => {
   const [selectedFile, setSelectedFile] = useState<File>();
 
   const [showSuccess, setShowSuccess] = useState(false);
+
+  const [customErrors, setCustomErrors] = useState<CustomErrors>({});
 
   const history = useHistory();
 
@@ -239,6 +247,13 @@ const CreatePoint: React.FC = () => {
 
               <Marker position={selectedPosition} />
             </Map>
+
+            {customErrors.map && (
+              <span>
+                <FiAlertTriangle color="#e57373" size={20} />
+                {customErrors.map}
+              </span>
+            )}
 
             <div className="field-group">
               <div className="field">
