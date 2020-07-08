@@ -287,7 +287,7 @@ const CreatePoint: React.FC = () => {
               <span>Selecione um ou mais itens abaixo</span>
             </legend>
 
-            <div className="items-grid">
+            <div className={`items-grid ${customErrors.items ? 'error' : ''}`}>
               {items.map(item => (
                 <button
                   type="button"
@@ -300,6 +300,13 @@ const CreatePoint: React.FC = () => {
                 </button>
               ))}
             </div>
+
+            {customErrors.items && (
+              <span>
+                <FiAlertTriangle color="#e57373" size={20} />
+                {customErrors.items}
+              </span>
+            )}
           </fieldset>
 
           <button type="submit">Cadastrar ponto de coleta</button>

@@ -115,7 +115,8 @@
 #page-create-point form .field span,
 #page-create-point form .field span,
 #page-create-point form .dropzone.error + span,
-#page-create-point form .leaflet-container.error + span {
+#page-create-point form .leaflet-container.error + span,
+#page-create-point form .items-grid.error + span {
   color: var(--error-color);
   font-weight: bold;
 
@@ -128,7 +129,8 @@
 #page-create-point form .field span > svg,
 #page-create-point form .field span > svg,
 #page-create-point form .dropzone.error + span > svg,
-#page-create-point form .leaflet-container.error + span > svg {
+#page-create-point form .leaflet-container.error + span > svg,
+#page-create-point form .items-grid.error + span > svg {
   margin-right: 5px;
 }
 
@@ -227,6 +229,12 @@
   grid-template-columns: repeat(3, 1fr);
   gap: 16px;
   list-style: none;
+  padding: 5px;
+  border-radius: 8px;
+}
+
+.items-grid.error {
+  background-color: #e5737382;
 }
 
 .items-grid button {
@@ -249,6 +257,8 @@
 .items-grid button span {
   flex: 1;
   margin-top: 12px;
+
+  font-size: 16px;
 
   display: flex;
   align-items: center;
