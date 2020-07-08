@@ -44,9 +44,9 @@ interface SelectOption extends OptionTypeBase {
 }
 
 interface CustomErrors {
-  dropzone?: string;
-  map?: string;
-  items?: string;
+  dropzone?: string | null;
+  map?: string | null;
+  items?: string | null;
 }
 
 interface FormData {
@@ -153,6 +153,51 @@ const CreatePoint: React.FC = () => {
   };
 
   const handleSubmit: SubmitHandler<FormData> = async data => {
+    let shouldAbortSubmit = false;
+
+    if (!selectedFile) {
+      setCustomErrors(state => ({
+        ...state,
+        dropzone: 'Nenhuma imagem selecionada',
+      }));
+      shouldAbortSubmit = true;
+    } else {
+      setCustomErrors(state => ({
+        ...state,
+        dropzone: null,
+      }));
+    }
+
+    if (selectedPosition.every(coordinate => !coordinate)) {
+      setCustomErrors(state => ({
+        ...state,
+        map: 'Nenhum lugar selecionado',
+      }));
+      shouldAbortSubmit = true;
+    } else {
+      setCustomErrors(state => ({
+        ...state,
+        map: null,
+      }));
+    }
+
+    if (!selectedItems.length) {
+      setCustomErrors(state => ({
+        ...state,
+        items: 'Nenhum item selecionado',
+      }));
+      shouldAbortSubmit = true;
+    } else {
+      setCustomErrors(state => ({
+        ...state,
+        items: null,
+      }));
+    }
+
+    if (shouldAbortSubmit) {
+      return;
+    }
+
     const { name, city, email, uf, whatsapp: rawWhatsapp } = data;
     const whatsapp = sanitizeWhatsapp(rawWhatsapp);
     const [latitude, longitude] = selectedPosition;
@@ -205,7 +250,10 @@ const CreatePoint: React.FC = () => {
             Cadastro do <br /> ponto de coleta
           </h1>
 
-          <Dropzone onFileUpload={setSelectedFile} />
+          <Dropzone
+            onFileUpload={setSelectedFile}
+            error={customErrors.dropzone}
+          />
 
           <fieldset>
             <legend>
@@ -239,7 +287,12 @@ const CreatePoint: React.FC = () => {
               <span>Selecione o endereço no mapa</span>
             </legend>
 
-            <Map center={initialPosition} zoom={15} onClick={handleMapClick}>
+            <Map
+              center={initialPosition}
+              className={customErrors.map ? 'error' : ''}
+              zoom={15}
+              onClick={handleMapClick}
+            >
               <TileLayer
                 attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

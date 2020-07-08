@@ -6,7 +6,7 @@ import './styles.css';
 
 interface Props {
   onFileUpload: (file: File) => void;
-  error?: string;
+  error?: string | null;
 }
 
 const Dropzone: React.FC<Props> = ({ onFileUpload, error }) => {
